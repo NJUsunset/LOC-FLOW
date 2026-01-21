@@ -1,0 +1,9 @@
+/Data_raw/
+/Data/waveform_sac/
+/Data/waveform_phasenet/
+/Data/waveform_mseed/
+/Data/station.dat
+/src/
+/bin/
+/logs/
+/Data/station_all.dat
