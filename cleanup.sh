@@ -5,10 +5,12 @@
 #rm -rf src/FDTCC src/GrowClust src/HYPODD src/MatchLocate2 src/PhaseNet src/REAL src/hyp1.40 bin/*
 
 #delete those generated big files
-#Warning!!! you will delete all waveforms
-rm -rf Data/waveform_sac
-rm -rf Data/waveform_phasenet Data/waveform_mseed Data/fname.csv Data/station.dat Data/catalog.dat Data/*.jpg
+#Warning!!! Unmarking next 3 lines will delete all waveforms
+# rm -rf Data_raw/*
+# rm -rf Data/waveform_sac
+# rm -rf Data/waveform_phasenet Data/waveform_mseed Data/fname.csv Data/station.dat Data/catalog.dat Data/*.jpg
 
+# Cleanup processed data folders
 rm -rf Pick/PhaseNet/20161014 Pick/PhaseNet/results
 rm -rf Pick/STALTA/20161014
 

@@ -1,9 +1,19 @@
-/Data_raw/
+# ignore data files
+/data_raw/
 /Data/waveform_sac/
 /Data/waveform_phasenet/
 /Data/waveform_mseed/
+/Data/sac/
+/Data/st/
+/Data/resp/
 /Data/station.dat
+
+# ignore compiled binaries and logs
 /src/
 /bin/
 /logs/
+
+# ignore example station list
 /Data/station_all.dat
+
+/Plot/support_data/

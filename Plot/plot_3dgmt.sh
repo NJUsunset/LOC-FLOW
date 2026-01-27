@@ -1,7 +1,9 @@
 #!/usr/bin/env -S bash -e
 gmt set PS_PAGE_ORIENTATION Portrait PS_MEDIA 9ix10.5i
-gmt set FONT_TAG 20p FONT_HEADING 25p MAP_HEADING_OFFSET 0p FONT_LABEL 20p FONT_ANNOT 16p
+gmt set FONT_TAG 16p FONT_HEADING 20p MAP_HEADING_OFFSET 0p FONT_LABEL 16p FONT_ANNOT 14p
 export GMT_SESSION_NAME=$$	# Set a unique session name
+
+fault_file="support_data/faults.shp"
 
 # 1-output figure; 0-don’t output.
 #fig_format=jpg,pdf
@@ -23,17 +25,17 @@ loc13=../location/hypoinverse/new.cat      #2
 hypoDD_CT=1
 loc2=../hypoDD_dtct/hypoDD.reloc
 # hypoDD CC locations
-hypoDD_CC=1
+hypoDD_CC=0
 loc3=../hypoDD_dtcc/hypoDD.reloc
 # Growclust locations
-Growclust=1
+Growclust=0
 loc4=../GrowClust/OUT/out.growclust_cat
 
 # study region
-lon1=12.9
-lon2=13.4
-lat1=42.4
-lat2=43
+lon1=113.7
+lon2=114.7
+lat1=36.0
+lat2=36.8
 dep1=0
 dep2=20
 
@@ -82,7 +84,7 @@ gmt basemap -R$region -J$projection  -Bxa0.1+l"Longitude (deg.)" -Bya5+l"Depth (
 cat $loc11|gawk  '{print $8, $9}'| gmt plot -Sc0.2c -W0.5p,black -Gred
 
 gmt subplot end
-gmt end show
+gmt end
 fi
 ##############################################
 
@@ -111,7 +113,7 @@ gmt basemap -R$region -J$projection  -Bxa0.1+l"Longitude (deg.)" -Bya5+l"Depth (
 cat $loc12|gawk  '{print $6, $7}'| gmt plot -Sc0.2c -W0.5p,black -Gred
 
 gmt subplot end
-gmt end show
+gmt end
 fi
 ##############################################
 
@@ -124,7 +126,15 @@ gmt subplot begin 2x2 -Fs$lon_range,$dep_range/$lat_range,$dep_range -A -M0.2c/0
 gmt subplot set 0,0
 projection="X$lon_range/$lat_range"
 region="$lon1/$lon2/$lat1/$lat2"
-gmt basemap -R$region -J$projection  -Bxa0.1 -Bya0.1+l"Latitude (deg.)" -BWSen
+gmt basemap -R$region -J$projection  -Bxa0.2 -Bya0.1+l"Latitude (deg.)" -BWSen
+gmt grdimage @earth_relief_03s -I+a45+nt0.8 -Cgeo
+if [ -f "$fault_file" ]; then
+    echo "Plotting fault lines from $fault_file as black dashed lines..."
+    # Plot faults as black dashed lines
+    gmt plot "$fault_file" -W2p,black,-
+else
+    echo "Warning: Fault file $fault_file not found. Skipping fault lines."
+fi
 cat $loc13|gawk  '{print $6, $5}'| gmt plot -Sc0.2c -W0.5p,black -Gred
 
 gmt subplot set 0,1
@@ -140,7 +150,7 @@ gmt basemap -R$region -J$projection  -Bxa0.1+l"Longitude (deg.)" -Bya5+l"Depth (
 cat $loc13|gawk  '{print $6, $7}'| gmt plot -Sc0.2c -W0.5p,black -Gred
 
 gmt subplot end
-gmt end show
+gmt end
 fi
 ##############################################
 
@@ -153,7 +163,27 @@ gmt subplot begin 2x2 -Fs$lon_range,$dep_range/$lat_range,$dep_range -A -M0.2c/0
 gmt subplot set 0,0
 projection="X$lon_range/$lat_range"
 region="$lon1/$lon2/$lat1/$lat2"
-gmt basemap -R$region -J$projection  -Bxa0.1 -Bya0.1+l"Latitude (deg.)" -BWSen
+gmt basemap -R$region -J$projection  -Bxa0.2 -Bya0.1+l"Latitude (deg.)" -BWSen
+gmt grdimage @earth_relief_03s -I+a45+nt0.8 -Cgeo
+if [ -f "$fault_file" ]; then
+    echo "Plotting fault lines from $fault_file as black dashed lines..."
+    # Plot faults as black dashed lines
+    gmt plot "$fault_file" -W2p,black,-
+    # Add fault names if available in the .dbf or .csv (assume .dbf to .csv conversion with columns: lon,lat,name)
+    fault_label_file="faults_labels.txt"
+    if [ -f "$fault_label_file" ]; then
+        # Format: lon lat name
+        awk '{print $1, $2, $3}' "$fault_label_file" | while read lon lat name; do
+            gmt text -F+f12p,Helvetica-Bold,black+jCM -D0.1c/0.1c -Gwhite@60 -N -R$region -J$projection <<EOF
+$lon $lat $name
+EOF
+        done
+    else
+        echo "Warning: Fault label file $fault_label_file not found. Skipping fault names."
+    fi
+else
+    echo "Warning: Fault file $fault_file not found. Skipping fault lines."
+fi
 cat $loc2|gawk  '{if($20 >= '''$nddp''') print $3, $2}'| gmt plot -Sc0.2c -W0.5p,black -Gred
 
 gmt subplot set 0,1
@@ -169,7 +199,7 @@ gmt basemap -R$region -J$projection  -Bxa0.1+l"Longitude (deg.)" -Bya5+l"Depth (
 cat $loc2|gawk '{if ($20 >= '''$nddp''') print $3, $4}'| gmt plot -Sc0.2c -W0.5p,black -Gred
 
 gmt subplot end
-gmt end show
+gmt end
 fi
 ##############################################
 
@@ -198,7 +228,7 @@ gmt basemap -R$region -J$projection  -Bxa0.1+l"Longitude (deg.)" -Bya5+l"Depth (
 cat $loc3|gawk  '{if($18 >= '''$nddp''') print $3, $4}'| gmt plot -Sc0.2c -W0.5p,black -Gred
 
 gmt subplot end
-gmt end show
+gmt end
 fi
 ##############################################
 
@@ -227,7 +257,7 @@ gmt basemap -R$region -J$projection  -Bxa0.1+l"Longitude (deg.)" -Bya5+l"Depth (
 cat $loc4|gawk '{if($16 >= '''$nddp''') print $9, $10}'| gmt plot -Sc0.2c -W0.5p,black -Gred
 
 gmt subplot end
-gmt end show
+gmt end
 fi
 ##############################################
 rm gmt.conf
