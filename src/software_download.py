@@ -12,6 +12,10 @@ os.system('git clone https://github.com/MinLiu19/FDTCC')
 
 
 #hypoinverse can be downloaded at https://www.usgs.gov/software/hypoinverse-earthquake-location
+#if download fail please try to manually download the hyp1.40.tar and put it in the current directory
+os.system('mkdir hyp1.40')
+os.system('cd hyp1.40 && wget https://escweb.wr.usgs.gov/content/software/HYPOINVERSE/hyp1.40.tar -N')
+os.system('cd hyp1.40 && tar -xvf hyp1.40.tar && rm hyp1.40.tar')
+
 #Complie each software and move commands in ../bin, and add the path in your ~/.bash_profile
 #source ~/.bash_profile
-
